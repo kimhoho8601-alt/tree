@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>함께 밝히는 한 장</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="screen-layout.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="screen-page">
@@ -37,10 +38,9 @@
           <p>참여가 쌓일수록 숨겨진 이미지가 조금씩 선명해집니다.</p>
         </div>
 
-        <div class="photo-frame">
-          <img class="reveal-photo" src="assets/final.webp" alt="아동의 삶을 바꾸는 것은 여러분입니다" />
+        <div class="photo-frame" id="photoFrame">
+          <img id="revealPhoto" class="reveal-photo" src="assets/final.webp" alt="아동의 삶을 바꾸는 것은 여러분입니다" />
           <div id="tileGrid" class="tile-grid" aria-hidden="true"></div>
-          <div class="photo-vignette"></div>
         </div>
 
         <div id="completeBadge" class="complete-badge hidden">
