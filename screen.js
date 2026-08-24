@@ -5,6 +5,7 @@ const countEl = document.querySelector('#screenCount');
 const latestMsg = document.querySelector('#latestMessage');
 const latestName = document.querySelector('#latestName');
 const completeBadge = document.querySelector('#completeBadge');
+const resetBtn = document.querySelector('#resetBtn');
 let lastCount = -1;
 
 function seededOrder(total, seed = 20260824) {
@@ -69,6 +70,9 @@ async function refresh() {
     const latest = rows[rows.length - 1];
     latestMsg.textContent = `“${String(latest.message ?? '')}”`;
     latestName.textContent = String(latest.display_name ?? '');
+  } else {
+    latestMsg.textContent = '첫 번째 참여를 기다리고 있어요.';
+    latestName.textContent = '-';
   }
 
   if (count >= cfg.capacity) completeBadge.classList.remove('hidden');
@@ -76,6 +80,32 @@ async function refresh() {
 
   lastCount = count;
 }
+
+resetBtn?.addEventListener('click', async () => {
+  const confirmation = prompt('전체 참여 기록을 초기화하려면 RESET-200 을 입력하세요.');
+  if (confirmation !== 'RESET-200') return;
+
+  const ok = confirm('정말 0 / 200 상태로 초기화할까요? 이 작업은 되돌릴 수 없습니다.');
+  if (!ok) return;
+
+  resetBtn.disabled = true;
+  resetBtn.textContent = '초기화 중...';
+
+  const { error } = await db.rpc('reset_tree_workshop_entries', {
+    p_confirmation: 'RESET-200'
+  });
+
+  if (error) {
+    alert('초기화에 실패했습니다.');
+  } else {
+    lastCount = -1;
+    await refresh();
+    alert('초기화되었습니다.');
+  }
+
+  resetBtn.disabled = false;
+  resetBtn.textContent = '초기화';
+});
 
 buildGrid();
 refresh();
