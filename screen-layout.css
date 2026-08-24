@@ -1,0 +1,11 @@
+.split-stage{grid-template-columns:44fr 56fr}
+.image-panel{background:#eee8e2}
+.photo-frame{position:absolute;inset:0;background:#eee8e2;overflow:hidden}
+.reveal-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center center;display:block;filter:none;image-rendering:auto}
+.tile-grid{position:absolute;z-index:2;display:grid;grid-template-columns:repeat(20,1fr);grid-template-rows:repeat(10,1fr);inset:auto;pointer-events:none}
+.photo-vignette{display:none}
+.image-panel-copy{left:20px;top:20px;width:255px;padding:18px 20px;background:rgba(255,255,255,.94)}
+.image-panel-copy h2{font-size:27px}
+.pledge-panel{min-width:0}
+.pledge-wall{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(56px,auto)}
+@media(max-width:1500px){.pledge-wall{grid-template-columns:repeat(2,minmax(0,1fr))}.split-stage{grid-template-columns:46fr 54fr}}
