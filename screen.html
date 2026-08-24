@@ -8,7 +8,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="screen-page">
-  <main class="screen-shell">
+  <main class="screen-shell screen-shell--split">
     <header class="screen-header">
       <div>
         <div class="eyebrow">SAVE THE CHILDREN WORKSHOP</div>
@@ -20,29 +20,34 @@
       </div>
     </header>
 
-    <section class="reveal-stage">
-      <div class="reveal-copy">
-        <p class="eyebrow">200개의 참여로 밝히는 사진</p>
-        <h2>한 번의 참여가<br>사진 한 조각을 밝힙니다.</h2>
-        <p>같은 사람도 여러 번 참여할 수 있습니다. 참여가 쌓일수록 숨겨진 이미지가 조금씩 선명해집니다.</p>
-      </div>
+    <section class="split-stage">
+      <section class="pledge-panel" aria-label="참여자 다짐 목록">
+        <div class="panel-head">
+          <p class="eyebrow">LIVE PLEDGES</p>
+          <h2>아이들의 내일을 위한<br>우리의 한마디</h2>
+          <p>최신 다짐부터 보여집니다. 새로운 메시지가 올라오면 오래된 다짐은 자연스럽게 밀려납니다.</p>
+        </div>
+        <div id="pledgeWall" class="pledge-wall"></div>
+      </section>
 
-      <div class="photo-frame" aria-label="참여할수록 밝아지는 워크숍 이미지">
-        <img class="reveal-photo" src="assets/final.webp" alt="아동의 삶을 바꾸는 것은 여러분입니다" />
-        <div id="tileGrid" class="tile-grid" aria-hidden="true"></div>
-        <div class="photo-vignette"></div>
-      </div>
+      <section class="image-panel" aria-label="참여할수록 밝아지는 워크숍 이미지">
+        <div class="image-panel-copy">
+          <p class="eyebrow">200개의 참여로 밝히는 사진</p>
+          <h2>한 번의 참여가<br>사진 한 조각을 밝힙니다.</h2>
+          <p>참여가 쌓일수록 숨겨진 이미지가 조금씩 선명해집니다.</p>
+        </div>
 
-      <aside class="latest-card photo-latest">
-        <span>가장 최근의 다짐</span>
-        <blockquote id="latestMessage">첫 번째 참여를 기다리고 있어요.</blockquote>
-        <b id="latestName">-</b>
-      </aside>
+        <div class="photo-frame">
+          <img class="reveal-photo" src="assets/final.webp" alt="아동의 삶을 바꾸는 것은 여러분입니다" />
+          <div id="tileGrid" class="tile-grid" aria-hidden="true"></div>
+          <div class="photo-vignette"></div>
+        </div>
 
-      <div id="completeBadge" class="complete-badge hidden">
-        <span>200 / 200</span>
-        <strong>우리의 한 장이 완성되었습니다.</strong>
-      </div>
+        <div id="completeBadge" class="complete-badge hidden">
+          <span>200 / 200</span>
+          <strong>우리의 한 장이 완성되었습니다.</strong>
+        </div>
+      </section>
     </section>
   </main>
 
