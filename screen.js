@@ -1,11 +1,11 @@
 const cfg = window.TREE_CONFIG;
 const db = supabase.createClient(cfg.supabaseUrl, cfg.supabaseKey);
 const tileGrid = document.querySelector('#tileGrid');
+const pledgeWall = document.querySelector('#pledgeWall');
 const countEl = document.querySelector('#screenCount');
-const latestMsg = document.querySelector('#latestMessage');
-const latestName = document.querySelector('#latestName');
 const completeBadge = document.querySelector('#completeBadge');
 const resetBtn = document.querySelector('#resetBtn');
+const MAX_BUBBLES = 48;
 let lastCount = -1;
 
 function seededOrder(total, seed = 20260824) {
@@ -28,6 +28,7 @@ function seededOrder(total, seed = 20260824) {
 const revealOrder = seededOrder(cfg.capacity);
 
 function buildGrid() {
+  tileGrid.innerHTML = '';
   for (let i = 0; i < cfg.capacity; i++) {
     const tile = document.createElement('div');
     tile.className = 'reveal-tile';
@@ -53,6 +54,38 @@ function renderReveal(count) {
   }
 }
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function renderPledges(rows) {
+  if (!pledgeWall) return;
+
+  if (!rows.length) {
+    pledgeWall.innerHTML = `
+      <article class="pledge-bubble pledge-bubble--empty">
+        <div class="bubble-body">첫 번째 다짐을 기다리고 있어요.</div>
+        <div class="bubble-meta">지금 휴대폰으로 참여해보세요.</div>
+      </article>`;
+    return;
+  }
+
+  const latestRows = rows.slice(-MAX_BUBBLES).reverse();
+  pledgeWall.innerHTML = latestRows.map((row, index) => {
+    const isNewest = index === 0;
+    return `
+      <article class="pledge-bubble${isNewest ? ' pledge-bubble--newest' : ''}">
+        <div class="bubble-body">“${escapeHtml(row.message)}”</div>
+        <div class="bubble-meta">${escapeHtml(row.display_name)} <span>#${row.slot_no}</span></div>
+      </article>`;
+  }).join('');
+}
+
 async function refresh() {
   const { data, error } = await db
     .from('tree_workshop_public')
@@ -65,15 +98,7 @@ async function refresh() {
   const count = rows.length;
   countEl.textContent = count;
   renderReveal(count);
-
-  if (count) {
-    const latest = rows[rows.length - 1];
-    latestMsg.textContent = `“${String(latest.message ?? '')}”`;
-    latestName.textContent = String(latest.display_name ?? '');
-  } else {
-    latestMsg.textContent = '첫 번째 참여를 기다리고 있어요.';
-    latestName.textContent = '-';
-  }
+  renderPledges(rows);
 
   if (count >= cfg.capacity) completeBadge.classList.remove('hidden');
   else completeBadge.classList.add('hidden');
@@ -96,7 +121,7 @@ resetBtn?.addEventListener('click', async () => {
   });
 
   if (error) {
-    alert('초기화에 실패했습니다.');
+    alert(`초기화에 실패했습니다. ${error.message || ''}`.trim());
   } else {
     lastCount = -1;
     await refresh();
