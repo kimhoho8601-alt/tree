@@ -5,6 +5,8 @@ const pledgeWall = document.querySelector('#pledgeWall');
 const countEl = document.querySelector('#screenCount');
 const completeBadge = document.querySelector('#completeBadge');
 const resetBtn = document.querySelector('#resetBtn');
+const photoFrame = document.querySelector('#photoFrame');
+const revealPhoto = document.querySelector('#revealPhoto');
 const MAX_BUBBLES = 48;
 let lastCount = -1;
 
@@ -35,6 +37,37 @@ function buildGrid() {
     tile.dataset.index = String(i);
     tileGrid.appendChild(tile);
   }
+}
+
+function syncGridToImage() {
+  if (!photoFrame || !revealPhoto || !revealPhoto.naturalWidth || !revealPhoto.naturalHeight) return;
+
+  const frameW = photoFrame.clientWidth;
+  const frameH = photoFrame.clientHeight;
+  const imageRatio = revealPhoto.naturalWidth / revealPhoto.naturalHeight;
+  const frameRatio = frameW / frameH;
+
+  let drawW;
+  let drawH;
+  let left;
+  let top;
+
+  if (imageRatio > frameRatio) {
+    drawW = frameW;
+    drawH = frameW / imageRatio;
+    left = 0;
+    top = (frameH - drawH) / 2;
+  } else {
+    drawH = frameH;
+    drawW = frameH * imageRatio;
+    top = 0;
+    left = (frameW - drawW) / 2;
+  }
+
+  tileGrid.style.left = `${left}px`;
+  tileGrid.style.top = `${top}px`;
+  tileGrid.style.width = `${drawW}px`;
+  tileGrid.style.height = `${drawH}px`;
 }
 
 function renderReveal(count) {
@@ -133,5 +166,8 @@ resetBtn?.addEventListener('click', async () => {
 });
 
 buildGrid();
+if (revealPhoto.complete) syncGridToImage();
+revealPhoto.addEventListener('load', syncGridToImage);
+window.addEventListener('resize', syncGridToImage);
 refresh();
 setInterval(refresh, cfg.pollMs);
