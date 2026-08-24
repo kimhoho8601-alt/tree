@@ -1,39 +1,82 @@
 const cfg = window.TREE_CONFIG;
 const db = supabase.createClient(cfg.supabaseUrl, cfg.supabaseKey);
-const fruitLayer = document.querySelector('#fruits');
-const leafLayer = document.querySelector('#leaves');
+const tileGrid = document.querySelector('#tileGrid');
 const countEl = document.querySelector('#screenCount');
 const latestMsg = document.querySelector('#latestMessage');
 const latestName = document.querySelector('#latestName');
-const finale = document.querySelector('#finale');
+const completeBadge = document.querySelector('#completeBadge');
 let lastCount = -1;
 
-function rng(seed){ let t=seed+0x6D2B79F5; return () => { t=Math.imul(t^t>>>15,t|1); t^=t+Math.imul(t^t>>>7,t|61); return ((t^t>>>14)>>>0)/4294967296; }; }
-function buildTree(){
-  const r = rng(20260824);
-  for(let i=0;i<270;i++){
-    const a=r()*Math.PI*2, rr=Math.sqrt(r());
-    const x=535 + Math.cos(a)*rr*360, y=270 + Math.sin(a)*rr*210;
-    const e=document.createElementNS('http://www.w3.org/2000/svg','ellipse');
-    e.setAttribute('cx',x); e.setAttribute('cy',y); e.setAttribute('rx',7+r()*7); e.setAttribute('ry',13+r()*8); e.setAttribute('transform',`rotate(${r()*180} ${x} ${y})`); e.setAttribute('class','leaf'); leafLayer.appendChild(e);
+function seededOrder(total, seed = 20260824) {
+  const arr = Array.from({ length: total }, (_, i) => i);
+  let t = seed >>> 0;
+  const rnd = () => {
+    t += 0x6D2B79F5;
+    let x = t;
+    x = Math.imul(x ^ (x >>> 15), x | 1);
+    x ^= x + Math.imul(x ^ (x >>> 7), x | 61);
+    return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+  };
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-  for(let i=1;i<=cfg.capacity;i++){
-    const a=r()*Math.PI*2, rr=Math.sqrt(r());
-    const x=535 + Math.cos(a)*rr*335, y=270 + Math.sin(a)*rr*185;
-    const g=document.createElementNS('http://www.w3.org/2000/svg','g'); g.setAttribute('class','fruit-slot'); g.dataset.slot=i;
-    const c=document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('cx',x); c.setAttribute('cy',y); c.setAttribute('r',10+r()*4);
-    g.appendChild(c); fruitLayer.appendChild(g);
+  return arr;
+}
+
+const revealOrder = seededOrder(cfg.capacity);
+
+function buildGrid() {
+  for (let i = 0; i < cfg.capacity; i++) {
+    const tile = document.createElement('div');
+    tile.className = 'reveal-tile';
+    tile.dataset.index = String(i);
+    tileGrid.appendChild(tile);
   }
 }
-async function refresh(){
-  const { data, error } = await db.from('tree_workshop_public').select('slot_no,display_name,message,created_at').order('slot_no');
-  if(error) return;
-  const rows=data||[]; countEl.textContent=rows.length;
-  document.querySelectorAll('.fruit-slot').forEach(n=>n.classList.remove('active','new'));
-  rows.forEach(row=>{ const node=document.querySelector(`.fruit-slot[data-slot="${row.slot_no}"]`); if(node) node.classList.add('active'); });
-  if(rows.length){ const latest=rows[rows.length-1]; latestMsg.textContent=`“${String(latest.message ?? '')}”`; latestName.textContent=String(latest.display_name ?? ''); }
-  if(lastCount >= 0 && rows.length > lastCount){ const newest=rows[rows.length-1]; const node=document.querySelector(`.fruit-slot[data-slot="${newest.slot_no}"]`); if(node) node.classList.add('new'); }
-  lastCount=rows.length;
-  if(rows.length >= cfg.capacity) finale.classList.remove('hidden');
+
+function renderReveal(count) {
+  const revealed = new Set(revealOrder.slice(0, Math.min(count, cfg.capacity)));
+  document.querySelectorAll('.reveal-tile').forEach((tile, idx) => {
+    const on = revealed.has(idx);
+    tile.classList.toggle('revealed', on);
+    tile.classList.remove('newly-revealed');
+  });
+
+  if (lastCount >= 0 && count > lastCount) {
+    for (let i = lastCount; i < count && i < cfg.capacity; i++) {
+      const idx = revealOrder[i];
+      const tile = tileGrid.children[idx];
+      if (tile) tile.classList.add('newly-revealed');
+    }
+  }
 }
-buildTree(); refresh(); setInterval(refresh,cfg.pollMs);
+
+async function refresh() {
+  const { data, error } = await db
+    .from('tree_workshop_public')
+    .select('slot_no,display_name,message,created_at')
+    .order('slot_no');
+
+  if (error) return;
+
+  const rows = data || [];
+  const count = rows.length;
+  countEl.textContent = count;
+  renderReveal(count);
+
+  if (count) {
+    const latest = rows[rows.length - 1];
+    latestMsg.textContent = `“${String(latest.message ?? '')}”`;
+    latestName.textContent = String(latest.display_name ?? '');
+  }
+
+  if (count >= cfg.capacity) completeBadge.classList.remove('hidden');
+  else completeBadge.classList.add('hidden');
+
+  lastCount = count;
+}
+
+buildGrid();
+refresh();
+setInterval(refresh, cfg.pollMs);
