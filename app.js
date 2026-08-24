@@ -8,6 +8,7 @@ const countEl = document.querySelector('#count');
 const bar = document.querySelector('#progressBar');
 const success = document.querySelector('#successCard');
 const charCount = document.querySelector('#charCount');
+const repeatBtn = document.querySelector('#repeatBtn');
 let deviceId = localStorage.getItem('tree_device_id');
 if (!deviceId) {
   deviceId = crypto.randomUUID();
@@ -25,6 +26,7 @@ async function refreshCount(){
     if (n >= cfg.capacity) {
       btn.disabled = true;
       btn.textContent = '200개의 조각이 모두 밝혀졌습니다';
+      if (repeatBtn) repeatBtn.disabled = true;
     }
   }
 }
@@ -56,7 +58,17 @@ form.addEventListener('submit', async (e) => {
   document.querySelector('#slotLabel').textContent = `#${row?.slot_no ?? ''}`;
   form.classList.add('hidden');
   success.classList.remove('hidden');
-  refreshCount();
+  await refreshCount();
+});
+
+repeatBtn?.addEventListener('click', () => {
+  success.classList.add('hidden');
+  form.classList.remove('hidden');
+  msgEl.value = '';
+  charCount.textContent = '0';
+  btn.disabled = false;
+  btn.textContent = '사진 한 조각 밝히기';
+  msgEl.focus();
 });
 
 refreshCount();
