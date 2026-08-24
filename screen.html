@@ -3,32 +3,46 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>우리의 약속나무</title>
+  <title>함께 밝히는 한 장</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="screen-page">
   <main class="screen-shell">
     <header class="screen-header">
-      <div><div class="eyebrow">SAVE THE CHILDREN WORKSHOP</div><h1>우리의 다짐이 <strong>아이들의 내일</strong>을 만듭니다</h1></div>
+      <div>
+        <div class="eyebrow">SAVE THE CHILDREN WORKSHOP</div>
+        <h1>우리의 참여가 <strong>한 장의 메시지</strong>를 완성합니다</h1>
+      </div>
       <div class="counter"><span id="screenCount">0</span><small>/ 200</small></div>
     </header>
-    <section class="tree-stage">
-      <div class="tree-copy"><h2>한 사람의 다짐이<br>하나의 열매가 됩니다.</h2><p>모든 열매가 채워지는 순간,<br>우리의 마지막 메시지가 완성됩니다.</p></div>
-      <svg id="treeSvg" viewBox="0 0 1000 650" role="img" aria-label="200개의 열매가 채워지는 약속나무">
-        <defs><filter id="shadow"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-opacity=".18"/></filter><linearGradient id="trunk" x1="0" x2="1"><stop stop-color="#6b452d"/><stop offset="1" stop-color="#9b6b43"/></linearGradient></defs>
-        <path class="trunk" d="M505 610 C480 520,495 440,505 350 C470 320,430 280,390 230 C438 265,480 290,520 320 C545 265,590 215,640 175 C600 230,575 285,555 345 C565 430,585 520,570 610 Z"/>
-        <path class="branch" d="M520 345 C430 305 345 260 270 185"/><path class="branch" d="M535 330 C615 270 700 210 790 160"/><path class="branch" d="M510 390 C430 380 350 365 270 330"/><path class="branch" d="M550 395 C635 375 720 340 820 300"/>
-        <g id="leaves"></g><g id="fruits"></g>
-      </svg>
-      <aside id="latestCard" class="latest-card"><span>가장 최근의 다짐</span><blockquote id="latestMessage">첫 번째 열매를 기다리고 있어요.</blockquote><b id="latestName">-</b></aside>
-    </section>
-    <section id="finale" class="finale hidden">
-      <img src="assets/final.webp" alt="아동의 삶을 바꾸는 것은 여러분입니다" />
-      <div class="finale-shade"></div>
-      <div class="finale-copy"><div class="eyebrow">200개의 다짐이 모였습니다</div><h2>아동의 삶을 바꾸는 것은<br><strong>여러분입니다</strong></h2><p>여러분의 참여와 실천이 아이들의 내일을 바꿉니다.</p></div>
+
+    <section class="reveal-stage">
+      <div class="reveal-copy">
+        <p class="eyebrow">200명이 함께 밝히는 사진</p>
+        <h2>한 사람의 참여가<br>사진 한 조각을 밝힙니다.</h2>
+        <p>참여가 쌓일수록 숨겨진 이미지가 조금씩 선명해집니다.</p>
+      </div>
+
+      <div class="photo-frame" aria-label="참여할수록 밝아지는 워크숍 이미지">
+        <img class="reveal-photo" src="assets/final.webp" alt="아동의 삶을 바꾸는 것은 여러분입니다" />
+        <div id="tileGrid" class="tile-grid" aria-hidden="true"></div>
+        <div class="photo-vignette"></div>
+      </div>
+
+      <aside class="latest-card photo-latest">
+        <span>가장 최근의 다짐</span>
+        <blockquote id="latestMessage">첫 번째 참여를 기다리고 있어요.</blockquote>
+        <b id="latestName">-</b>
+      </aside>
+
+      <div id="completeBadge" class="complete-badge hidden">
+        <span>200 / 200</span>
+        <strong>우리의 한 장이 완성되었습니다.</strong>
+      </div>
     </section>
   </main>
+
   <script src="config.js"></script>
   <script src="screen.js"></script>
 </body>
