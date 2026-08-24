@@ -2,34 +2,62 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#c9232b" />
-  <title>우리의 다짐이 아이들의 내일을 만듭니다</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#d51f2b" />
+  <title>함께 밝히는 한 장 | 워크숍</title>
   <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="participant-page">
-  <main class="mobile-shell">
-    <section class="brandbar"><span class="brandmark">SAVE THE CHILDREN</span><span>WORKSHOP 2026</span></section>
-    <section class="hero-card compact">
-      <div class="eyebrow">200명이 함께 만드는 약속나무</div>
-      <h1>당신의 한마디가<br><strong>아이들의 내일</strong>을 만듭니다.</h1>
-      <p>워크숍에서 실천하고 싶은 한 가지를 남겨주세요. 참여할 때마다 행사장의 나무에 열매가 하나씩 채워집니다.</p>
-      <div class="progress-wrap"><div class="progress-label"><span id="progressText">참여 현황</span><strong><span id="count">0</span> / 200</strong></div><div class="progress"><i id="progressBar"></i></div></div>
-    </section>
-    <form id="pledgeForm" class="form-card">
-      <label>이름 또는 별칭<input id="name" maxlength="30" placeholder="예: 김OO" autocomplete="name" required /></label>
-      <label>나의 다짐 한마디<textarea id="message" maxlength="120" rows="5" placeholder="예: 아이의 목소리를 먼저 듣겠습니다." required></textarea><small><span id="charCount">0</span>/120</small></label>
-      <button id="submitBtn" type="submit">나무에 열매 달기</button>
-      <p class="privacy-note">이름/별칭과 메시지는 행사장 화면에 표시될 수 있습니다.</p>
-    </form>
-    <section id="successCard" class="success-card hidden" aria-live="polite">
-      <div class="fruit-pop">●</div>
-      <h2>당신의 열매가 달렸습니다!</h2>
-      <p><strong id="slotLabel">#1</strong>번째 약속이 되었습니다.</p>
-      <a href="screen.html" target="_blank" rel="noopener">약속나무 보기</a>
+  <main class="participant-shell">
+    <section class="participant-card">
+      <div class="brand-row">
+        <span class="brand-mark">SAVE THE CHILDREN</span>
+        <span class="brand-divider"></span>
+        <span class="brand-sub">WORKSHOP</span>
+      </div>
+
+      <div class="mobile-preview" aria-hidden="true">
+        <img src="assets/final.webp" alt="" />
+        <div class="mobile-preview-shade"></div>
+      </div>
+
+      <p class="eyebrow">200명이 함께 완성하는 한 장</p>
+      <h1>당신의 참여로<br><strong>사진 한 조각을 밝혀주세요</strong></h1>
+      <p class="lead">한 사람의 다짐이 모일 때마다 행사장 화면의 사진이 한 칸씩 선명해집니다.</p>
+
+      <div class="progress-card">
+        <div class="progress-top">
+          <span>현재 참여</span>
+          <strong><span id="count">0</span> / 200</strong>
+        </div>
+        <div class="progress-track"><div id="progressBar" class="progress-fill"></div></div>
+      </div>
+
+      <form id="pledgeForm" class="pledge-form">
+        <label>
+          <span>이름 또는 별칭</span>
+          <input id="name" maxlength="30" autocomplete="name" placeholder="예: 김OO" required />
+        </label>
+        <label>
+          <span>아이들의 내일을 위한 나의 한마디</span>
+          <textarea id="message" maxlength="120" rows="4" placeholder="예: 아이들의 목소리를 먼저 듣겠습니다." required></textarea>
+          <small><span id="charCount">0</span> / 120</small>
+        </label>
+        <button id="submitBtn" type="submit">사진 한 조각 밝히기</button>
+      </form>
+
+      <section id="successCard" class="success-card hidden" aria-live="polite">
+        <div class="success-icon">✓</div>
+        <p class="eyebrow">참여 완료 <span id="slotLabel"></span></p>
+        <h2>당신의 참여로<br>사진 한 조각이 밝아졌어요.</h2>
+        <p>행사장 화면에서 함께 완성되는 모습을 확인해보세요.</p>
+      </section>
+
+      <p class="network-note">같은 행사장 Wi‑Fi를 사용해도 각 휴대폰에서 정상적으로 참여할 수 있습니다.</p>
     </section>
   </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
